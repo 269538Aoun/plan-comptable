@@ -5,9 +5,17 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Plan Comptable — Feuilleteur</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Public+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap">
-<link rel="stylesheet" href="style.css?v=2">
+<link rel="stylesheet" href="style.css?v=3">
 </head>
 <body>
+
+<nav class="topbar" id="topbar">
+  <button class="topbar-toggle" id="topbarToggle" type="button" aria-label="Menu des classes" aria-expanded="false" aria-controls="topbarMenu">
+    <span class="bars"></span>
+  </button>
+  <span class="topbar-current" id="topbarCurrent"></span>
+  <div class="topbar-menu" id="topbarMenu" role="menu"></div>
+</nav>
 
 <div class="stage">
   <p class="caption">Plan comptable général — feuilleter les classes</p>
@@ -1782,6 +1790,6 @@
 </div>
 
 
-<script src="script.js?v=2"></script>
+<script src="script.js?v=3"></script>
 </body>
 </html>

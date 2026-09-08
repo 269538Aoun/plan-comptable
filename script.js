@@ -39,6 +39,69 @@
   });
   var dots = Array.prototype.slice.call(dotsWrap.querySelectorAll('.dot'));
 
+  // ----- top navigation bar: one entry per class (+ résumé) -----
+  var topbar = document.getElementById('topbar');
+  var topbarToggle = document.getElementById('topbarToggle');
+  var topbarMenu = document.getElementById('topbarMenu');
+  var topbarCurrent = document.getElementById('topbarCurrent');
+  var classNav = [];      // { spread, label, short }
+  var topbarLinks = [];
+
+  if (topbar && topbarMenu){
+    var seenLabel = {};
+    spreads.forEach(function(sp, i){
+      var label = sp.getAttribute('data-label') || ('Page ' + (i + 1));
+      if (seenLabel[label]) return;
+      seenLabel[label] = true;
+      var m = label.match(/^\s*Classe\s+(\d+)/i);
+      var short = m ? 'Classe ' + m[1] : label.split(/\s+/)[0].trim();
+      classNav.push({ spread: i, label: label, short: short });
+
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'topbar-link';
+      var theme = (sp.className.match(/theme-[\w-]+/) || [])[0];
+      if (theme) b.classList.add(theme);
+      b.setAttribute('role', 'menuitem');
+      b.setAttribute('data-spread', i);
+      b.title = label;
+      b.textContent = short;
+      topbarMenu.appendChild(b);
+    });
+    topbarLinks = Array.prototype.slice.call(topbarMenu.querySelectorAll('.topbar-link'));
+
+    var closeMenu = function(){
+      topbar.classList.remove('open');
+      topbarToggle.setAttribute('aria-expanded', 'false');
+    };
+
+    topbarToggle.addEventListener('click', function(){
+      var open = topbar.classList.toggle('open');
+      topbarToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+    topbarMenu.addEventListener('click', function(e){
+      var b = e.target.closest ? e.target.closest('.topbar-link') : null;
+      if (!b) return;
+      closeMenu();
+      var si = +b.getAttribute('data-spread');
+      goTo(isMobile() ? firstPageOf(si) : si);
+      if (window.scrollTo) window.scrollTo(0, 0);
+    });
+    document.addEventListener('keydown', function(e){ if (e.key === 'Escape') closeMenu(); });
+    document.addEventListener('click', function(e){
+      if (topbar.classList.contains('open') && !topbar.contains(e.target)) closeMenu();
+    });
+  }
+
+  // horizontal-only "scroll into view" — never nudges the page vertically
+  function scrollXIntoView(el){
+    var p = el && el.parentElement;
+    if (!p) return;
+    var er = el.getBoundingClientRect(), pr = p.getBoundingClientRect();
+    if (er.left < pr.left) p.scrollLeft -= (pr.left - er.left) + 12;
+    else if (er.right > pr.right) p.scrollLeft += (er.right - pr.right) + 12;
+  }
+
   function firstPageOf(spreadIdx){
     for (var i = 0; i < pages.length; i++){ if (pages[i].spread === spreadIdx) return i; }
     return Math.max(0, Math.min(pageIndex, pages.length - 1));
@@ -62,8 +125,25 @@
     nextBtn.disabled = unitPos() === unitCount() - 1;
     var label = spreads[activeSpread].getAttribute('data-label');
     counter.textContent = label + ' · ' + (unitPos() + 1) + ' / ' + unitCount();
-    var active = dots[activeSpread];
-    if (active && active.scrollIntoView) active.scrollIntoView({block:'nearest', inline:'nearest'});
+    scrollXIntoView(dots[activeSpread]);
+
+    // top bar: highlight the current class, update the mobile label
+    if (topbarLinks.length){
+      var curLabel = spreads[activeSpread].getAttribute('data-label');
+      var curShort = '';
+      topbarLinks.forEach(function(b){
+        var on = spreads[+b.getAttribute('data-spread')].getAttribute('data-label') === curLabel;
+        b.classList.toggle('is-current', on);
+        if (on){
+          b.setAttribute('aria-current', 'true');
+          curShort = b.textContent;
+          scrollXIntoView(b);
+        } else {
+          b.removeAttribute('aria-current');
+        }
+      });
+      if (topbarCurrent) topbarCurrent.textContent = curShort;
+    }
   }
 
   // ----- phone: slide one page at a time -----
