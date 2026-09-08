@@ -310,6 +310,79 @@
 
   hr.sep{ border:none; border-top:1px solid var(--rule); margin:18px 0 20px; }
 
+  /* ---------- résumé du plan de comptes (dernière page) ---------- */
+
+  .spread.wide{ grid-template-columns:1fr; }
+  .spread.wide::after{ display:none; }
+
+  .page.resume{ padding:26px 30px 32px; }
+  .page.resume .ribbon{ margin-bottom:16px; }
+
+  .resume-scroll{ overflow-x:auto; }
+
+  .resume-table{
+    width:100%;
+    border-collapse:collapse;
+    table-layout:fixed;
+    font-size:11px;
+    line-height:1.32;
+  }
+
+  .resume-table col.col-classe{ width:11.3%; }
+  .resume-table col.col-c8{ width:20.9%; }
+
+  .resume-table th,
+  .resume-table td{
+    border:1px solid var(--rule);
+    padding:5px 7px;
+    text-align:left;
+    vertical-align:top;
+  }
+
+  .resume-table .super th{
+    text-align:center;
+    text-transform:uppercase;
+    font-family:'Barlow Condensed', ui-sans-serif, sans-serif;
+    font-weight:700;
+    font-size:12px;
+    letter-spacing:.05em;
+    color:var(--ink-soft);
+    background:var(--page-edge);
+  }
+
+  .resume-table .classe-row th{
+    text-align:center;
+    text-transform:uppercase;
+    font-family:'Barlow Condensed', ui-sans-serif, sans-serif;
+    font-weight:700;
+    font-size:13.5px;
+    letter-spacing:.03em;
+    background:var(--accent-tab);
+    color:var(--accent-ink);
+  }
+
+  .resume-table tbody td{
+    font-variant-numeric:tabular-nums;
+    color:var(--ink);
+  }
+
+  .resume-table tbody tr:nth-child(even) td:not(.c8-note){
+    background:rgba(0,0,0,0.025);
+  }
+
+  .resume-table .sub td{
+    font-style:italic;
+    font-weight:500;
+    color:var(--ink-soft);
+  }
+
+  .resume-table .c8-note{
+    font-style:italic;
+    font-size:10.5px;
+    color:var(--ink-soft);
+    background:linear-gradient(180deg, rgba(255,255,255,0.45), transparent);
+  }
+
   @media (max-width:720px){
     .nav{ width:36px; height:36px; font-size:17px; }
     .page{ padding:24px 18px 30px; }
